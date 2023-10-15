@@ -1,0 +1,50 @@
+{
+  "input_voltage": {
+    "number": "0x2000",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "v"
+  },
+  "input_current": {
+    "number": "0x2001",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "a"
+  },
+  "output_voltage": {
+    "number": "0x2002",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "v"
+  },
+  "output_current": {
+    "number": "0x2003",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "a"
+  },
+  "batt_voltage": {
+    "number": "0x2004",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "v"
+  },
+  "batt_current": {
+    "number": "0x2005",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "a"
+  },
+  "batt_int_resistance": {
+    "number": "0x2009",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "mΩ"
+  },
+  "batt_charge_capacity": {
+    "number": "0x200B",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "Ah"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "battery_type": {
+    "number": "0x1010",
+    "decimals": 0,
+    "type": "uint16",
+    "unit": ""
+  },
+  "charge_voltage": {
+    "number": "0x1011",
+    "decimals": 1,
+    "type": "uint16",
+    "unit": "v"
+  },
+  "charge_current": {
+    "number": "0x1012",
+    "decimals": 1,
+    "type": "uint16",
+    "unit": "a"
+  },
+  "float_voltage": {
+    "number": "0x1013",
+    "decimals": 1,
+    "type": "uint16",
+    "unit": "v"
+  },
+  "low_voltage": {
+    "number": "0x1014",
+    "decimals": 1,
+    "type": "uint16",
+    "unit": "v"
+  },
+  "deep_discharge_voltage": {
+    "number": "0x1015",
+    "decimals": 1,
+    "type": "uint16",
+    "unit": "v"
+  },
+  "max_discharge_current": {
+    "number": "0x1016",
+    "decimals": 1,
+    "type": "uint16",
+    "unit": "a"
+  },
+  "batt_capacity": {
+    "number": "0x1017",
+    "decimals": 1,
+    "type": "uint16",
+    "unit": "Ah"
+  },
+  "DCDC_output_mode": {
+    "number": "0x102A",
+    "decimals": 0,
+    "type": "uint16",
+    "unit": ""
+  }
+}
