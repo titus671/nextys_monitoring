@@ -1,5 +1,5 @@
 import minimalmodbus
-from config import CONFIG
+from lib.config import CONFIG
 
 class NEXTYS:
     def __init__(self, config: CONFIG):
@@ -113,4 +113,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    nexty = NEXTYS(CONFIG())
