@@ -21,12 +21,27 @@ class DB:
                 location VARCHAR(50)
             );
             """
+        check_exists_sensor_hypertable = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM _timescaledb_catalog.hypertable
+                WHERE table_name = 'sensor_data'
+            )
+            """
+        create_sensor_hypertable = """
+            CREATE TABLE sensor_data (
+                time TIMESTAMPTZ NOT NULL,
+                sensor_id INTEGER
+
+            )"""
         self.cursor.execute(check_exists_sensors)
         if self.cursor.fetchone()[0]:
-            return "sensors table exists already"
+            print("sensors table exists already")
         else:
             self.cursor.execute(create_sensors_table)
-            return "created sensors table"
+            print("created sensors table")
+        self.cursor.execute(check_exists_sensor_hypertable)
+        
         
     def close_connection(self):
         self.conn.commit()
