@@ -1,14 +1,19 @@
 import minimalmodbus
-from lib.config import CONFIG
+#from config import CONFIG
+import lib.psql_functions as psql_functions
 
 class NEXTYS:
-    def __init__(self, config: CONFIG):
+    def __init__(self, config):
         self.config = config
         self.instrument = minimalmodbus.Instrument(config.usb_address, config.slave_address)
-
+        self.device_id = config.device_id
     def read_settings(self):
         
         return {
+            "device_id": self.device_id,
+            "ip_address": self.config.ip_address,
+            "sysName": self.config.sysName,
+            "location": self.config.location,
             "batt_type": self.get_batt_type(),
             "charge_voltage": self.get_charge_voltage(),
             "charge_current": self.get_charge_current(),
@@ -23,6 +28,7 @@ class NEXTYS:
     def read_meters(self):
         try:
             return {
+                "device_id": self.device_id,
                 "input_voltage": self.get_input_voltage(),
                 "input_current": self.get_input_current(),
                 "output_voltage": self.get_output_voltage(),
@@ -105,6 +111,7 @@ class NEXTYS:
 
 def main():
     import json
+    from config import CONFIG
     nexty = NEXTYS(CONFIG())
     r = nexty.read_settings()
     print(json.dumps(r, indent=2))
@@ -113,4 +120,4 @@ def main():
 
 
 if __name__ == "__main__":
-    nexty = NEXTYS(CONFIG())
+    main()
