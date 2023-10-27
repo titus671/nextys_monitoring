@@ -1,7 +1,5 @@
 import minimalmodbus
-#from config import CONFIG
-import lib.psql_functions as psql_functions
-
+import time
 class NEXTYS:
     def __init__(self, config):
         self.config = config
@@ -28,6 +26,7 @@ class NEXTYS:
     def read_meters(self):
         try:
             return {
+                "unix_timestamp": time.time(),
                 "device_id": self.device_id,
                 "input_voltage": self.get_input_voltage(),
                 "input_current": self.get_input_current(),

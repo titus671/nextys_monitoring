@@ -1,9 +1,14 @@
 import psycopg2
 import os, sys
 
+if __name__ == "__main__":
+    from logger import Logger
+else:
+    from lib.logger import Logger
+
 class DB:
     def __init__(self, conn):
-        from lib.logger import Logger
+
         self.logger = Logger()
         try:
             self.conn = conn
@@ -47,12 +52,24 @@ class DB:
             CREATE TABLE sensor_data (
                 time TIMESTAMPTZ NOT NULL,
                 sensor_id INTEGER,
-                input_voltage DOUBLE PRECISION,
-                input_current DOUBLE PRECISION,
-                output_voltage DOUBLE PRECISION,
-                output_current DOUBLE PRECISION,
-                batt_voltage DOUBLE PRECISION,
-                batt_current DOUBLE PRECISION,
+                input_voltage_min DOUBLE PRECISION,
+                input_voltage_avg DOUBLE PRECISION,
+                input_voltage_max DOUBLE PRECISION,
+                input_current_min DOUBLE PRECISION,
+                input_current_avg DOUBLE PRECISION,
+                input_current_max DOUBLE PRECISION,
+                output_voltage_min DOUBLE PRECISION,
+                output_voltage_avg DOUBLE PRECISION,
+                output_voltage_max DOUBLE PRECISION,
+                output_current_min DOUBLE PRECISION,
+                output_current_avg DOUBLE PRECISION,
+                output_current_max DOUBLE PRECISION,
+                batt_voltage_min DOUBLE PRECISION,
+                batt_voltage_avg DOUBLE PRECISION,
+                batt_voltage_max DOUBLE PRECISION,
+                batt_current_min DOUBLE PRECISION,
+                batt_current_avg DOUBLE PRECISION,
+                batt_current_max DOUBLE PRECISION,
                 batt_int_resistance DOUBLE PRECISION,
                 batt_charge_capacity DOUBLE PRECISION,
                 operating_time INTEGER,
@@ -98,15 +115,11 @@ class DB:
             config.set_device_id(id)
  
     def insert_settings(self, settings: dict):
-        id = settings["device_id"]
-        ip_address = settings["ip_address"]
-        sysName = settings["sysName"]
-        location = settings["location"]
         values = (
-            f"{id}",
-            f"{ip_address}",
-            f"{sysName}",
-            f"{location}",
+            settings["device_id"],
+            settings["ip_address"],
+            settings["sysName"],
+            settings["location"],
             settings['batt_type'],
             settings['charge_voltage'],
             settings['charge_current'],
@@ -116,9 +129,9 @@ class DB:
             settings['max_discharge_current'],
             settings['batt_capacity'],
             settings['DCDC_output_mode'],
-            f"{ip_address}",
-            f"{sysName}",
-            f"{location}",
+            settings["ip_address"],
+            settings["sysName"],
+            settings["location"],
             settings['batt_type'],
             settings['charge_voltage'],
             settings['charge_current'],
@@ -161,7 +174,65 @@ class DB:
         DCDC_output_mode = %s;
         """
         return self.cursor.execute(query, values)
+    
+    def insert_metrics(self, metrics):
+        values = (
+            metrics["unix_timestamp"],
+            metrics["device_id"],
+            metrics["input_voltage_min"],
+            metrics["input_voltage_avg"],
+            metrics["input_voltage_max"],
+            metrics["input_current_min"],
+            metrics["input_current_avg"],
+            metrics["input_current_max"],
+            metrics["output_voltage_min"],
+            metrics["output_voltage_avg"],
+            metrics["output_voltage_max"],
+            metrics["output_current_min"],
+            metrics["output_current_avg"],
+            metrics["output_current_max"],
+            metrics["batt_voltage_min"],
+            metrics["batt_voltage_avg"],
+            metrics["batt_voltage_max"],
+            metrics["batt_current_min"],
+            metrics["batt_current_avg"],
+            metrics["batt_current_max"],
+            metrics["batt_int_resistance"],
+            metrics["batt_charge_capacity"],
+            metrics["operating_time"],
+            metrics["batt_operating_time"])
+        query = f"""
+        INSERT INTO sensor_data (
+            time,
+            sensor_id,
+            input_voltage_min,
+            input_voltage_avg,
+            input_voltage_max,
+            input_current_min,
+            input_current_avg,
+            input_current_max,
+            output_voltage_min,
+            output_voltage_avg,
+            output_voltage_max,
+            output_current_min,
+            output_current_avg,
+            output_current_max,
+            batt_voltage_min,
+            batt_voltage_avg,
+            batt_voltage_max,
+            batt_current_min,
+            batt_current_avg,
+            batt_current_max,
+            batt_int_resistance,
+            batt_charge_capacity,
+            operating_time,
+            batt_operating_time
+        )
+        VALUES(to_timestamp(%s),%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
+        """
         
+        return self.cursor.execute(query, values)
+
     def close_connection(self):
         self.conn.commit()
         self.cursor.close()
