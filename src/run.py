@@ -7,6 +7,7 @@ import json, time, signal, sys
 def gracefull_shutdown(sig, frame):
     print("\nexiting")
     sys.exit(0)
+
 def pprint(j):
     print(json.dumps(j, indent=2))
 
@@ -87,7 +88,7 @@ def main_loop():
     config = CONFIG()
     logger = Logger()
     while True:
-        db = DB(init_connection())
+        db = DB(init_connection(config))
         db.initialize_device(config)
         settings = NEXTYS(config).read_settings()
         db.insert_settings(settings)
@@ -101,7 +102,7 @@ def main():
     config = CONFIG()
     nexty = NEXTYS(config)
     settings = nexty.read_settings()
-    db = DB(init_connection())
+    db = DB(init_connection(config))
     db.initialize_device(config)
     db.insert_settings(settings)
     db.close_connection()
