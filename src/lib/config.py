@@ -17,7 +17,7 @@ class CONFIG:
             self.sysName = self.config["sysName"]
             self.location = self.config["location"]
             self.db_host = self.config.get("db_host", "localhost")
-            self.db_port = self.config.get("db_port", 5432)
+            self.db_port = self.config.get("db_port", "5432")
             self.db_username = self.config.get("db_username", "postgres")
             self.db_password = self.config.get("db_password", "password")
             self.db_name = self.config.get("db_name", "postgres")
