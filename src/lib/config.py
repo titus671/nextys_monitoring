@@ -1,5 +1,7 @@
 import json
 import os
+def pprint(j):
+    print(json.dumps(j, indent=4))
 
 class CONFIG:
     def __init__(self):
@@ -26,7 +28,10 @@ class CONFIG:
     def set_device_id(self, id):
         self.config["device_id"] = id
         with open(os.path.join(self.cwd, "config.json"), 'w') as c:
-           json.dump(self.config, c, indent=4) 
+           json.dump(self.config, c, indent=4)
+
+    def __str__(self):
+        return json.dumps(self.config, indent=4)
 
 def main():
     config = CONFIG()

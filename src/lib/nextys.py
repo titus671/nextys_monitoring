@@ -3,7 +3,11 @@ import time
 class NEXTYS:
     def __init__(self, config):
         self.config = config
-        self.instrument = minimalmodbus.Instrument(config.usb_address, config.slave_address)
+        
+        try:
+            self.instrument = minimalmodbus.Instrument(config.usb_address, config.slave_address)
+        except FileNotFoundError as e:
+            print(f"error in NEXTYS(): {e}")
         self.device_id = config.device_id
     def read_settings(self):
         

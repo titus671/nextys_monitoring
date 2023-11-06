@@ -1,7 +1,6 @@
 import psycopg2
 import os, sys
 
-from lib.config import CONFIG
 
 if __name__ == "__main__":
     from logger import Logger
@@ -239,12 +238,13 @@ class DB:
         self.conn.commit()
         self.cursor.close()
 
-def init_connection(config: CONFIG):
+def init_connection(config):
     host = config.db_host
     port = config.db_port
     db_password = config.db_password
     db_username = config.db_username
     db_name = config.db_name
+    #print(config)
     
     try:
         CONNECTION = f"postgres://{db_username}:{db_password}@{host}:{port}/{db_name}"
