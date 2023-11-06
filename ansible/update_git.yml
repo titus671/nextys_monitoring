@@ -1,0 +1,14 @@
+---
+- name: Update Git Repo on devices
+  hosts: beaglebones
+
+  tasks:
+    - name: Update the Git Repo
+      git:
+        repo: git@github.com:titus672/nextys_monitoring.git
+        dest: /home/debian/nextys_monitoring
+        version: HEAD
+      register: git_update_result
+    - name: Check the Git update result
+      debug:
+        var: git_update_result
