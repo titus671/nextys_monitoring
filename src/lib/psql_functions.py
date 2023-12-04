@@ -74,8 +74,7 @@ class DB:
                 batt_int_resistance DOUBLE PRECISION,
                 batt_charge_capacity DOUBLE PRECISION,
                 operating_time INTEGER,
-                batt_operating_time INTEGER,
-                FOREIGN KEY (sensor_id) REFERENCES sensors (id)
+                batt_operating_time INTEGER
             );
             CREATE INDEX ON sensor_data (sensor_id, time DESC);"""
         create_sensor_data_hypertable = """
