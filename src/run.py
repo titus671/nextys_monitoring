@@ -94,9 +94,12 @@ def main_loop():
         db.insert_settings(settings)
         logger.log(db.insert_metrics(get_metrics()))
         db.close_connection()
+
 def test():
-    nexty = NEXTYS(CONFIG())
+    config = CONFIG()
+    db.initialize_device(config)
     pprint(get_metrics())
+
 def main():
     logger = Logger()
     config = CONFIG()

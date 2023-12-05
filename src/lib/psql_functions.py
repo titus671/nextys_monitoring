@@ -76,9 +76,13 @@ class DB:
                 operating_time INTEGER,
                 batt_operating_time INTEGER
             );
-            CREATE INDEX ON sensor_data (sensor_id, time DESC);"""
+            CREATE INDEX ON sensor_data (sensor_id, time DESC);
+            """
         create_sensor_data_hypertable = """
             SELECT create_hypertable('sensor_data', 'time');
+            ALTER TABLE sensor_data SET (timescaledb.compress,
+                                         timescaledb.compress_segmentby = 'sensor_id');
+            SELECT add_compression_policy('sensor_data', INTERVAL '2 days');
             """
         self.cursor.execute(check_exists_sensors)
         if self.cursor.fetchone()[0]:
