@@ -17,7 +17,8 @@ def avg(l: list):
 def get_metrics():
     signal.signal(signal.SIGINT, gracefull_shutdown)
     metrics = []
-    nexty = NEXTYS(CONFIG())
+    config = CONFIG()
+    nexty = NEXTYS(config)
     count = 0
     t1 = time.time() + 10
     while time.time() <= t1:
@@ -53,10 +54,19 @@ def get_metrics():
         "operating_time",
         "batt_operating_time"
     ]
+    
     for metric in metrics:
         for key in metric:
             if key in accepted_keys:
                 f[key].append(metric[key])
+    # creates a dictionary with the following schema...
+    # {
+    #     "device_id": [device_id],
+    #     "unix_timestamp": [list of unix_timestamps],
+    #     "input_voltage": [list of input_voltages],
+    #     "input_current": [list of input_currents],
+    #     ...
+    # }
     return {
         "device_id": f["device_id"][0],
         "unix_timestamp": avg(f["unix_timestamp"]),
