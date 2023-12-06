@@ -19,26 +19,26 @@ class DB:
             sys.exit(1)
 
     def create_tables(self):
-        check_exists_sensors = """
+        check_exists_sensor_metadata = """
             SELECT EXISTS (
                 SELECT 1
                 FROM information_schema.tables
-                WHERE table_name = 'sensors'
+                WHERE table_name = 'sensor_metadata'
             )"""
-        create_sensors_table = """
-            CREATE TABLE sensors (
+        create_sensor_metadata_table = """
+            CREATE TABLE sensor_metadata (
                 id SERIAL PRIMARY KEY,
                 ip_address INET,
                 sysName VARCHAR(50),
                 location VARCHAR(50),
                 batt_type INTEGER,
-                charge_voltage DOUBLE PRECISION,
-                charge_current DOUBLE PRECISION,
-                float_voltage DOUBLE PRECISION,
-                low_voltage DOUBLE PRECISION,
-                deep_discharge_voltage DOUBLE PRECISION,
-                max_discharge_current DOUBLE PRECISION,
-                batt_capacity DOUBLE PRECISION,
+                charge_voltage REAL,
+                charge_current REAL,
+                float_voltage REAL,
+                low_voltage REAL,
+                deep_discharge_voltage REAL,
+                max_discharge_current REAL,
+                batt_capacity REAL,
                 DCDC_output_mode INTEGER
             );
             """
@@ -53,26 +53,26 @@ class DB:
             CREATE TABLE sensor_data (
                 time TIMESTAMPTZ NOT NULL,
                 sensor_id INTEGER,
-                input_voltage_min DOUBLE PRECISION,
-                input_voltage_avg DOUBLE PRECISION,
-                input_voltage_max DOUBLE PRECISION,
-                input_current_min DOUBLE PRECISION,
-                input_current_avg DOUBLE PRECISION,
-                input_current_max DOUBLE PRECISION,
-                output_voltage_min DOUBLE PRECISION,
-                output_voltage_avg DOUBLE PRECISION,
-                output_voltage_max DOUBLE PRECISION,
-                output_current_min DOUBLE PRECISION,
-                output_current_avg DOUBLE PRECISION,
-                output_current_max DOUBLE PRECISION,
-                batt_voltage_min DOUBLE PRECISION,
-                batt_voltage_avg DOUBLE PRECISION,
-                batt_voltage_max DOUBLE PRECISION,
-                batt_current_min DOUBLE PRECISION,
-                batt_current_avg DOUBLE PRECISION,
-                batt_current_max DOUBLE PRECISION,
-                batt_int_resistance DOUBLE PRECISION,
-                batt_charge_capacity DOUBLE PRECISION,
+                input_voltage_min REAL,
+                input_voltage_avg REAL,
+                input_voltage_max REAL,
+                input_current_min REAL,
+                input_current_avg REAL,
+                input_current_max REAL,
+                output_voltage_min REAL,
+                output_voltage_avg REAL,
+                output_voltage_max REAL,
+                output_current_min REAL,
+                output_current_avg REAL,
+                output_current_max REAL,
+                batt_voltage_min REAL,
+                batt_voltage_avg REAL,
+                batt_voltage_max REAL,
+                batt_current_min REAL,
+                batt_current_avg REAL,
+                batt_current_max REAL,
+                batt_int_resistance REAL,
+                batt_charge_capacity REAL,
                 operating_time INTEGER,
                 batt_operating_time INTEGER
             );
@@ -84,12 +84,12 @@ class DB:
                                          timescaledb.compress_segmentby = 'sensor_id');
             SELECT add_compression_policy('sensor_data', INTERVAL '2 days');
             """
-        self.cursor.execute(check_exists_sensors)
+        self.cursor.execute(check_exists_sensor_metadata)
         if self.cursor.fetchone()[0]:
-            self.logger.log("sensors table exists already")
+            self.logger.log("sensor_metadata table exists already")
         else:
-            self.cursor.execute(create_sensors_table)
-            self.logger.log("created sensors table")
+            self.cursor.execute(create_sensor_metadata_table)
+            self.logger.log("created sensor_metadata table")
         self.cursor.execute(check_exists_sensor_hypertable)
         if self.cursor.fetchone()[0]:
             self.logger.log("sensor_data hypertable exists already")
@@ -106,7 +106,7 @@ class DB:
             f"{config.location}"
         )
         query = f"""
-        INSERT INTO sensors (
+        INSERT INTO sensor_metadata (
             ip_address,
             sysname,
             location
@@ -147,7 +147,7 @@ class DB:
             settings['batt_capacity'],
             settings['DCDC_output_mode'])
         query = f"""
-        INSERT INTO sensors (
+        INSERT INTO sensor_metadata (
                              id,
                              ip_address,
                              sysname,
