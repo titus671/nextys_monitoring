@@ -23,6 +23,8 @@ class CONFIG:
             self.db_username = self.config.get("db_username", "postgres")
             self.db_password = self.config.get("db_password", "password")
             self.db_name = self.config.get("db_name", "postgres")
+            self.low_batt_threshold = self.config.get("low_batt_threshold", 12.0)
+            self.ac_down_threshold = self.config.get("ac_down_threshold", 10)
         
 
     def set_device_id(self, id):
