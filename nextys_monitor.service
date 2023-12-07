@@ -1,0 +1,9 @@
+[Unit]
+Description=Service to upload metrics from the nextys to postgresql
+
+[Service]
+Type=simple
+ExecStart=/home/debian/nextys_monitoring/venv/bin/python3 /home/debian/nextys_monitoring/src/run.py
+
+[Install]
+WantedBy=multi-user.target
