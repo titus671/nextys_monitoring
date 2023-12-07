@@ -31,6 +31,8 @@ class DB:
                 ip_address INET,
                 sysName VARCHAR(50),
                 location VARCHAR(50),
+                batt_low INT,
+                ac_down INT,
                 batt_type INTEGER,
                 charge_voltage REAL,
                 charge_current REAL,
@@ -100,6 +102,7 @@ class DB:
             self.logger.log("created sensor_data hypertable")
 
     def initialize_device(self, config):
+        self.config = config
         values = (
             f"{config.ip_address}",
             f"{config.sysName}",
@@ -118,6 +121,31 @@ class DB:
             self.cursor.execute(query, values)
             id = self.cursor.fetchone()[0]
             config.set_device_id(id)
+    
+    def update_alerts(self, metrics):
+        #expects a state dict with the following schema:
+        #{
+        #    "batt_low": True,
+        #    "ac_down": False,
+        #    "id": 1
+        #}
+        v = {}
+        if metrics["batt_voltage_avg"] <= self.config.low_batt_threshold:
+            v["low_batt"] = int(True)
+        else:
+            v["low_batt"] = int(False)
+        if metrics["input_voltage_avg"] <= self.config.ac_down_threshold:
+            v["ac_down"] = int(True)
+        else:
+            v["ac_down"] = int(False)
+        v["id"] = self.config.device_id
+        
+        query = f"""
+        UPDATE sensor_metadata
+            SET batt_low = %s, ac_down = %s
+        WHERE id = %s;
+        """
+        return self.cursor.execute(query, (v["low_batt"], v["ac_down"], v["id"]))
  
     def insert_settings(self, settings: dict):
         values = (

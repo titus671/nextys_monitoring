@@ -29,7 +29,7 @@ def get_metrics():
     f = {
         "device_id": [],
         "unix_timestamp": [],
-         "input_voltage": [],
+        "input_voltage": [],
         "input_current": [],
         "output_voltage": [],
         "output_current": [],
@@ -102,11 +102,15 @@ def main_loop():
         db.initialize_device(config)
         settings = NEXTYS(config).read_settings()
         db.insert_settings(settings)
-        logger.log(db.insert_metrics(get_metrics()))
+        # get metrics
+        metrics = get_metrics()
+        logger.log(db.update_alerts(metrics))
+        logger.log(db.insert_metrics(metrics))
         db.close_connection()
 
 def test():
     config = CONFIG()
+    db = DB(init_connection(config))
     db.initialize_device(config)
     pprint(get_metrics())
 
