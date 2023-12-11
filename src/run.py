@@ -25,7 +25,6 @@ def get_metrics():
         metrics.append(nexty.read_meters())
         count += 1
         time.sleep(0.1)
-    print(count)
     f = {
         "device_id": [],
         "unix_timestamp": [],
