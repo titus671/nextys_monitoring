@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg
 import os, sys
 
 
@@ -280,7 +280,7 @@ def init_connection(config):
     
     try:
         CONNECTION = f"postgres://{db_username}:{db_password}@{host}:{port}/{db_name}"
-        return psycopg2.connect(CONNECTION)
+        return psycopg.connect(CONNECTION)
         
     except:
         return ("!!Error connecting to the database")
