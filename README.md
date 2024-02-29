@@ -20,7 +20,7 @@ pip install -r requirements.txt
 1. cd into the src dir and run the config script
  - `cd src && python lib/psql_functions.py -v`
 2. copy the `nextys_monitor.service` file and enable it
- - ```
+```
 sudo cp nextys_monitor.service /etc/systemd/system/
 sudo systemctl daemon-reload && sudo systemctl enable --now nextys_monitor
 ```
