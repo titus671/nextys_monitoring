@@ -31,3 +31,7 @@ python lib/psql_functions.py -v
 sudo cp nextys_monitor.service /etc/systemd/system/
 sudo systemctl daemon-reload && sudo systemctl enable --now nextys_monitor
 ```
+
+### Notes
+If the device is in the db but hasn't been deployed yet, ie the bogus alerts
+are annoying, the fix for now is `UPDATE sensor_metadata SET batt_low = 0, ac_down = 0 WHERE id = 7;`
