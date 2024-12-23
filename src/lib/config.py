@@ -25,7 +25,12 @@ class CONFIG:
             self.db_name = self.config.get("db_name", "postgres")
             self.low_batt_threshold = self.config.get("low_batt_threshold", 12.0)
             self.ac_down_threshold = self.config.get("ac_down_threshold", 10)
-        
+            self.reporter_url = self.config.get("reporter_url", "http://localhost:8080")
+            self.reporter_token = self.config.get("reporter_token", "reporter token here")
+            self.reporter_probe_id = self.config.get("reporter_probe_id", "internal")
+            self.reporter_node_id = self.config.get("reporter_node_id", "nextys")
+            self.reporter_replica_id = self.config.get("reporter_replica_id", "replica id here")
+            self.reporter_interval = self.config.get("reporter_interval", 5)
 
     def set_device_id(self, id):
         self.config["device_id"] = id

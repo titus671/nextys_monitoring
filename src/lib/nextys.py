@@ -43,8 +43,9 @@ class NEXTYS:
                 "operating_time": self.get_operating_time(),
                 "batt_operating_time": self.get_batt_operating_time()
             }
-        except:
+        except Exception as e:
             print("Error reading values")
+            raise e
 
     #
     # The below funcions contain the

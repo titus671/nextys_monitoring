@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
 from lib.nextys import NEXTYS
 from lib.config import CONFIG
 from lib.psql_functions import DB, init_connection
 from lib.logger import Logger
 import json, time, signal, sys
+from vigil_reporter.reporter import VigilReporter
 
 def gracefull_shutdown(sig, frame):
     print("\nexiting")
@@ -96,16 +98,31 @@ def get_metrics():
 def main_loop():
     config = CONFIG()
     logger = Logger()
+    vigil_config = {
+        "url": config.reporter_url,
+        "token": config.reporter_token,
+        "probe_id": config.reporter_probe_id,
+        "node_id": config.reporter_node_id,
+        "replica_id": config.reporter_replica_id,
+        "interval": config.reporter_interval
+    }
+    reporter = VigilReporter.from_config(vigil_config)
+    reporter.report_in_thread()
+
     while True:
-        db = DB(init_connection(config))
-        db.initialize_device(config)
-        settings = NEXTYS(config).read_settings()
-        db.insert_settings(settings)
-        # get metrics
-        metrics = get_metrics()
-        logger.log(db.update_alerts(metrics))
-        logger.log(db.insert_metrics(metrics))
-        db.close_connection()
+        try:
+            db = DB(init_connection(config))
+            db.initialize_device(config)
+            settings = NEXTYS(config).read_settings()
+            db.insert_settings(settings)
+            # get metrics
+            metrics = get_metrics()
+            logger.log(db.update_alerts(metrics))
+            logger.log(db.insert_metrics(metrics))
+            db.close_connection()
+        except Exception as e:
+            reporter.stop()
+            raise e
 
 def test():
     config = CONFIG()

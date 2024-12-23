@@ -1,2 +1,3 @@
 minimalmodbus
 psycopg[c]
+py-vigil-reporter

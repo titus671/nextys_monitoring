@@ -14,9 +14,9 @@ class DB:
         try:
             self.conn = conn
             self.cursor = self.conn.cursor()
-        except AttributeError:
+        except AttributeError as e:
             self.logger.log("Connection was not valid,\nconsider double checking your creds")
-            sys.exit(1)
+            raise e
 
     def create_tables(self):
         check_exists_sensor_metadata = """
