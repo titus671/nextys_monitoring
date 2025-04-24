@@ -3,18 +3,25 @@ from lib.nextys import NEXTYS
 from lib.config import CONFIG
 from lib.psql_functions import DB, init_connection
 from lib.logger import Logger
-import json, time, signal, sys
+import json
+import time
+import signal
+import sys
 from vigil_reporter.reporter import VigilReporter
+
 
 def gracefull_shutdown(sig, frame):
     print("\nexiting")
     sys.exit(0)
 
+
 def pprint(j):
     print(json.dumps(j, indent=2))
 
+
 def avg(l: list):
     return round(sum(l) / len(l), 3)
+
 
 def get_metrics():
     signal.signal(signal.SIGINT, gracefull_shutdown)
@@ -55,7 +62,7 @@ def get_metrics():
         "operating_time",
         "batt_operating_time"
     ]
-    
+
     for metric in metrics:
         for key in metric:
             if key in accepted_keys:
@@ -94,7 +101,8 @@ def get_metrics():
         "operating_time": f["operating_time"][-1],
         "batt_operating_time": f["batt_operating_time"][-1]
     }
-        
+
+
 def main_loop():
     config = CONFIG()
     logger = Logger()
@@ -124,11 +132,13 @@ def main_loop():
             reporter.stop()
             raise e
 
+
 def test():
     config = CONFIG()
     db = DB(init_connection(config))
     db.initialize_device(config)
     pprint(get_metrics())
+
 
 def main():
     logger = Logger()
@@ -140,6 +150,6 @@ def main():
     db.insert_settings(settings)
     db.close_connection()
 
+
 if __name__ == "__main__":
     main_loop()
-
