@@ -31,6 +31,12 @@ python lib/psql_functions.py -v
 sudo cp nextys_monitor.service /etc/systemd/system/
 sudo systemctl daemon-reload && sudo systemctl enable --now nextys_monitor
 ```
+## Ansible
+1. Copy the ./ansible/inventory-example.ini file to ./ansible/inventory.ini and add all the devices.
+2. to update `ansible-playbook -i inventory.ini update_git.yml --ask-become-pass`
+#### Note
+Pass `-k` as well if you haven't set up ssh keys.
+
 
 ### Notes
 If the device is in the db but hasn't been deployed yet, ie the bogus alerts
