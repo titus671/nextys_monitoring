@@ -1,14 +1,21 @@
 ---
 - name: Update Git Repo on devices
   hosts: beaglebones
-
   tasks:
     - name: Update the Git Repo
       git:
-        repo: git@github.com:titus672/nextys_monitoring.git
+        repo: https://github.com/titus671/nextys_monitoring.git
         dest: /home/debian/nextys_monitoring
-        version: HEAD
+        version: main
       register: git_update_result
+
     - name: Check the Git update result
       debug:
         var: git_update_result
+
+    - name: Restart monitoring service if code was updated
+      become: true
+      systemd:
+        name: nextys_monitor.service
+        state: restarted
+      when: git_update_result.after != git_update_result.before
