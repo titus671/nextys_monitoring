@@ -43,7 +43,7 @@ def get_metrics():
         "output_current": [],
         "batt_voltage": [],
         "batt_current": [],
-        "bat_soc": [],
+        "batt_soc": [],
         "batt_int_resistance": [],
         "batt_charge_capacity": [],
         "operating_time": [],
