@@ -1,11 +1,13 @@
 import psycopg
-import os, sys
+import os
+import sys
 
 
 if __name__ == "__main__":
     from logger import Logger
 else:
     from lib.logger import Logger
+
 
 class DB:
     def __init__(self, conn):
@@ -73,6 +75,7 @@ class DB:
                 batt_current_min REAL,
                 batt_current_avg REAL,
                 batt_current_max REAL,
+                batt_soc REAL,
                 batt_int_resistance REAL,
                 batt_charge_capacity REAL,
                 operating_time INTEGER,
@@ -121,14 +124,14 @@ class DB:
             self.cursor.execute(query, values)
             id = self.cursor.fetchone()[0]
             config.set_device_id(id)
-    
+
     def update_alerts(self, metrics):
-        #expects a state dict with the following schema:
-        #{
+        # expects a state dict with the following schema:
+        # {
         #    "batt_low": True,
         #    "ac_down": False,
         #    "id": 1
-        #}
+        # }
         v = {}
         if metrics["batt_voltage_avg"] <= self.config.low_batt_threshold:
             v["low_batt"] = int(True)
@@ -139,14 +142,14 @@ class DB:
         else:
             v["ac_down"] = int(False)
         v["id"] = self.config.device_id
-        
+
         query = f"""
         UPDATE sensor_metadata
             SET batt_low = %s, ac_down = %s
         WHERE id = %s;
         """
         return self.cursor.execute(query, (v["low_batt"], v["ac_down"], v["id"]))
- 
+
     def insert_settings(self, settings: dict):
         values = (
             settings["device_id"],
@@ -189,7 +192,7 @@ class DB:
                              max_discharge_current,
                              batt_capacity,
                              DCDC_output_mode
-                             ) 
+                             )
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT (id) DO UPDATE
         SET
@@ -207,7 +210,7 @@ class DB:
         DCDC_output_mode = %s;
         """
         return self.cursor.execute(query, values)
-    
+
     def insert_metrics(self, metrics):
         values = (
             metrics["unix_timestamp"],
@@ -230,11 +233,12 @@ class DB:
             metrics["batt_current_min"],
             metrics["batt_current_avg"],
             metrics["batt_current_max"],
+            metrics["batt_soc"],
             metrics["batt_int_resistance"],
             metrics["batt_charge_capacity"],
             metrics["operating_time"],
             metrics["batt_operating_time"])
-        query = f"""
+        query = """
         INSERT INTO sensor_data (
             time,
             sensor_id,
@@ -256,19 +260,21 @@ class DB:
             batt_current_min,
             batt_current_avg,
             batt_current_max,
+            batt_soc,
             batt_int_resistance,
             batt_charge_capacity,
             operating_time,
             batt_operating_time
         )
-        VALUES(to_timestamp(%s),%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
+        VALUES(to_timestamp(%s),%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
         """
-        
+
         return self.cursor.execute(query, values)
 
     def close_connection(self):
         self.conn.commit()
         self.cursor.close()
+
 
 def init_connection(config):
     host = config.db_host
@@ -276,14 +282,15 @@ def init_connection(config):
     db_password = config.db_password
     db_username = config.db_username
     db_name = config.db_name
-    #print(config)
-    
+    # print(config)
+
     try:
         CONNECTION = f"postgres://{db_username}:{db_password}@{host}:{port}/{db_name}"
         return psycopg.connect(CONNECTION)
-        
+
     except:
         return ("!!Error connecting to the database")
+
 
 def main():
     from config import CONFIG
@@ -292,6 +299,7 @@ def main():
     db.create_tables()
     db.initialize_device(config)
     db.close_connection()
+
 
 if __name__ == "__main__":
     main()

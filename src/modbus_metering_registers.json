@@ -35,6 +35,12 @@
     "type": "sint16",
     "unit": "a"
   },
+  "batt_soc": {
+    "number": "0x200A",
+    "decimals": 1,
+    "type": "sint16",
+    "unit": "%"
+  },
   "batt_int_resistance": {
     "number": "0x2009",
     "decimals": 1,

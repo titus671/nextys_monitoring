@@ -41,6 +41,7 @@ class NEXTYS:
                 "output_current": self.get_output_current(),
                 "batt_voltage": self.get_batt_voltage(),
                 "batt_current": self.get_batt_current(),
+                "batt_soc": self.get_batt_soc(),
                 "batt_int_resistance": self.get_batt_int_resistance(),
                 "batt_charge_capacity": self.get_batt_charge_capacity(),
                 "operating_time": self.get_operating_time(),
@@ -132,6 +133,9 @@ class NEXTYS:
 
     def get_batt_int_resistance(self):
         return self.instrument.read_register(0x2009, 1, signed=True)
+
+    def get_batt_soc(self):
+        return self.instrument.read_register(0x200A, 1, signed=True)
 
     def get_batt_charge_capacity(self):
         return self.instrument.read_register(0x200B, 1, signed=True)
