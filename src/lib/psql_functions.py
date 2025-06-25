@@ -288,8 +288,9 @@ def init_connection(config):
         CONNECTION = f"postgres://{db_username}:{db_password}@{host}:{port}/{db_name}"
         return psycopg.connect(CONNECTION)
 
-    except:
-        return ("!!Error connecting to the database")
+    except Exception as e:
+        print(f"[ERROR] DB connection failed: {e}")
+        raise
 
 
 def main():
